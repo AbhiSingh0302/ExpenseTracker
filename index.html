@@ -26,5 +26,57 @@
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <script>
+        const form = document.querySelector("form");
+        const amount = document.getElementById("amount");
+        const desc = document.getElementById("desc");
+        const category = document.getElementById("category");
+        const ul = document.createElement("ul");
+        form.parentNode.insertBefore(ul, form.nextSibling);
+        const addExpense = (e) => {
+            e.preventDefault();
+            let li = document.createElement("li");
+            let input = [amount.value,desc.value,category.value];
+            if(input[0] != "" && input[1] != "" && input[2] != "none"){
+                localStorage.setItem(input[1],JSON.stringify(input));
+                input.forEach(value=>{
+                    li.textContent += value+" - ";
+                 })
+                let dltBtn = document.createElement("button");
+            dltBtn.textContent = " Delete ";
+            let editBtn = document.createElement("button");
+            editBtn.textContent = " Edit ";
+            li.appendChild(dltBtn);
+            li.appendChild(editBtn);
+            ul.appendChild(li);
+            }
+        }
+        Object.keys(localStorage).map(function(key){
+            let li = document.createElement("li");
+            JSON.parse(localStorage.getItem(key)).forEach(value=>{
+                li.textContent += value+" - ";
+            });
+            let dltBtn = document.createElement("button");
+            dltBtn.textContent = " Delete ";
+            let editBtn = document.createElement("button");
+            editBtn.textContent = " Edit ";
+            li.appendChild(dltBtn);
+            li.appendChild(editBtn);
+            ul.appendChild(li);
+            dltBtn.onclick = () => {
+                li.remove();
+                localStorage.removeItem(key);
+            }
+            editBtn.onclick = () => {
+                let arr = JSON.parse(localStorage.getItem(key));
+                amount.value = arr[0];
+                desc.value = arr[1];
+                category.value = arr[2];
+                li.remove();
+                localStorage.removeItem(key);
+            }
+        });
+        form.addEventListener("submit",addExpense);
+    </script>
 </body>
 </html>
