@@ -1,86 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense Tracker</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
+
 <body>
-    <div class="container-fluid m-5">
-        <form class="mb-5"> 
-            <label for="amount">Choose Amount</label>
-            <input type="number" id="amount">
-            <label for="desc">Choose Description</label>
-            <input type="text" id="desc">
-            <label for="category">Choose Category</label>
-            <select id="category">
-                <option value="none">--None--</option>
-                <option value="fashion">Fashion</option>
-                <option value="stationary">Stationary</option>
-                <option value="home-appliance">Home Appliance</option>
-                <option value="mobile-accessories">Mobile Accessories</option>
-              </select>
-              <input type="submit" value="Add Expense" class="btn btn-primary">
-        </form>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    <script>
-        const form = document.querySelector("form");
-        const amount = document.getElementById("amount");
-        const desc = document.getElementById("desc");
-        const category = document.getElementById("category");
-        const ul = document.createElement("ul");
-        form.parentNode.insertBefore(ul, form.nextSibling);
-        const addExpense = (e) => {
-            e.preventDefault();
-            let li = document.createElement("li");
-            let input = [amount.value,desc.value,category.value];
-            if(input[0] != "" && input[1] != "" && input[2] != "none"){
-                localStorage.setItem(input[1],JSON.stringify(input));
-                input.forEach(value=>{
-                    li.textContent += value+" - ";
-                 })
-                let dltBtn = document.createElement("button");
-            dltBtn.textContent = " Delete ";
-            dltBtn.classList = "btn btn-outline-danger mx-2";
-            let editBtn = document.createElement("button");
-            editBtn.textContent = " Edit ";
-            editBtn.classList = "btn btn-outline-warning mx-2";
-            li.appendChild(dltBtn);
-            li.appendChild(editBtn);
-            ul.appendChild(li);
-            }
+  <div class="container-fluid mt-5">
+    <form class="mb-5" enctype="application/json">
+      <label for="amount">Choose Amount</label>
+      <input type="number" id="amount" name="amount">
+      <label for="desc">Choose Description</label>
+      <input type="text" id="desc" name="desciption">
+      <label for="category">Choose Category</label>
+      <select id="category" name="category">
+        <option value="none">--None--</option>
+        <option value="fashion">Fashion</option>
+        <option value="stationary">Stationary</option>
+        <option value="home-appliance">Home Appliance</option>
+        <option value="mobile-accessories">Mobile Accessories</option>
+      </select>
+      <input type="submit" value="Add Expense" class="btn btn-primary">
+    </form>
+    <table class="table table-dark table-hover table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">Amount</th>
+          <th scope="col">Description</th>
+          <th scope="col">Category</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">1</th>
+          <td>Mark</td>
+          <td>Otto</td>
+        </tr>
+        <tr>
+          <th scope="row">2</th>
+          <td>Jacob</td>
+          <td>Thornton</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  <script>
+    const form = document.querySelector("form");
+    const amount = document.getElementById("amount");
+    const desc = document.getElementById("desc");
+    const category = document.getElementById("category");
+    const ul = document.createElement("ul");
+    form.parentNode.insertBefore(ul, form.nextSibling);
+    const addExpense = (e) => {
+      e.preventDefault();
+      axios.post('/expense', form, {
+        headers: {
+          'Content-Type': 'application/json'
         }
-        Object.keys(localStorage).map(function(key){
-            let li = document.createElement("li");
-            JSON.parse(localStorage.getItem(key)).forEach(value=>{
-                li.textContent += value+" - ";
-            });
-            let dltBtn = document.createElement("button");
-            dltBtn.textContent = " Delete ";
-            dltBtn.classList = "btn btn-outline-danger mx-2";
-            let editBtn = document.createElement("button");
-            editBtn.textContent = " Edit ";
-            editBtn.classList = "btn btn-outline-warning mx-2";
-            li.appendChild(dltBtn);
-            li.appendChild(editBtn);
-            ul.appendChild(li);
-            dltBtn.onclick = () => {
-                li.remove();
-                localStorage.removeItem(key);
-            }
-            editBtn.onclick = () => {
-                let arr = JSON.parse(localStorage.getItem(key));
-                amount.value = arr[0];
-                desc.value = arr[1];
-                category.value = arr[2];
-                li.remove();
-                localStorage.removeItem(key);
-            }
-        });
-        form.addEventListener("submit",addExpense);
-    </script>
+      })
+      .then(()=>{
+        console.log('success');
+      })
+      //     let li = document.createElement("li");
+      //     let input = [amount.value,desc.value,category.value];
+      //     if(input[0] != "" && input[1] != "" && input[2] != "none"){
+      //         localStorage.setItem(input[1],JSON.stringify(input));
+      //         input.forEach(value=>{
+      //             li.textContent += value+" - ";
+      //         })
+      //         let dltBtn = document.createElement("button");
+      //         dltBtn.textContent = " Delete ";
+      //     dltBtn.classList = "btn btn-outline-danger mx-2";
+      //     let editBtn = document.createElement("button");
+      //     editBtn.textContent = " Edit ";
+      //     editBtn.classList = "btn btn-outline-warning mx-2";
+      //     li.appendChild(dltBtn);
+      //     li.appendChild(editBtn);
+      //     ul.appendChild(li);
+      // }
+    }
+    // Object.keys(localStorage).map(function(key){
+    //     let li = document.createElement("li");
+    //     JSON.parse(localStorage.getItem(key)).forEach(value=>{
+    //         li.textContent += value+" - ";
+    //     });
+    //     let dltBtn = document.createElement("button");
+    //         dltBtn.textContent = " Delete ";
+    //         dltBtn.classList = "btn btn-outline-danger mx-2";
+    //         let editBtn = document.createElement("button");
+    //         editBtn.textContent = " Edit ";
+    //         editBtn.classList = "btn btn-outline-warning mx-2";
+    //         li.appendChild(dltBtn);
+    //         li.appendChild(editBtn);
+    //         ul.appendChild(li);
+    //         dltBtn.onclick = () => {
+    //             li.remove();
+    //             localStorage.removeItem(key);
+    //         }
+    //         editBtn.onclick = () => {
+    //             let arr = JSON.parse(localStorage.getItem(key));
+    //             amount.value = arr[0];
+    //             desc.value = arr[1];
+    //             category.value = arr[2];
+    //             li.remove();
+    //             localStorage.removeItem(key);
+    //         }
+    //     });
+    form.addEventListener("submit", addExpense);
+  </script>
 </body>
+
 </html>
