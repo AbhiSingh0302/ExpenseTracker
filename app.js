@@ -61,6 +61,25 @@ app.post('/expense',(req,res,next)=>{
     .catch(err => console.log("There is error: ",err));
 });
 
+app.get('/expense-data/:id',(req,res,next)=>{
+    console.log('req id: ',req.params.id);
+    user.destroy({
+        where:{
+            id: req.params.id
+        }
+    })
+    .then((data) => {
+        res.status(200).json({
+            message: "Successfully deleted",
+        })
+    })
+    .catch((err) => {
+        res.status(404).json({
+            message: 'Failed',
+        })
+    });
+})
+
 app.get('/expense-data',(req,res,next)=>{
     user.findAll()
     .then(results=>{
