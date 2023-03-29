@@ -36,16 +36,6 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-        </tr>
       </tbody>
     </table>
   </div>
@@ -60,61 +50,60 @@
     const category = document.getElementById("category");
     const ul = document.createElement("ul");
     form.parentNode.insertBefore(ul, form.nextSibling);
+    const table = document.querySelector('table');
     const addExpense = (e) => {
       e.preventDefault();
-      axios.post('/expense', form, {
+       axios.post('http://localhost:3000/expense', form, {
         headers: {
           'Content-Type': 'application/json'
         }
       })
-      .then(()=>{
-        console.log('success');
+      .then((res)=>{
+        return res.data;
       })
-      //     let li = document.createElement("li");
-      //     let input = [amount.value,desc.value,category.value];
-      //     if(input[0] != "" && input[1] != "" && input[2] != "none"){
-      //         localStorage.setItem(input[1],JSON.stringify(input));
-      //         input.forEach(value=>{
-      //             li.textContent += value+" - ";
-      //         })
-      //         let dltBtn = document.createElement("button");
-      //         dltBtn.textContent = " Delete ";
-      //     dltBtn.classList = "btn btn-outline-danger mx-2";
-      //     let editBtn = document.createElement("button");
-      //     editBtn.textContent = " Edit ";
-      //     editBtn.classList = "btn btn-outline-warning mx-2";
-      //     li.appendChild(dltBtn);
-      //     li.appendChild(editBtn);
-      //     ul.appendChild(li);
-      // }
+      .then(result => {
+        console.log('axios success: ',result.data)
+        let arr = [result.data];
+        addToTable(arr);
+      })
+      .catch(()=>{
+        console.log('axios failed');
+      })
+      .finally(()=>{
+        console.log('axios finally');
+      })
+      // let row = table.insertRow(); 
+      // let cell1 = row.insertCell(0);
+      // let cell2 = row.insertCell(1);
+      // let cell3 = row.insertCell(2);
+      // cell1.innerHTML = amount.value;
+      // cell2.innerHTML = desc.value;
+      // cell3.innerHTML = category.value;
     }
-    // Object.keys(localStorage).map(function(key){
-    //     let li = document.createElement("li");
-    //     JSON.parse(localStorage.getItem(key)).forEach(value=>{
-    //         li.textContent += value+" - ";
-    //     });
-    //     let dltBtn = document.createElement("button");
-    //         dltBtn.textContent = " Delete ";
-    //         dltBtn.classList = "btn btn-outline-danger mx-2";
-    //         let editBtn = document.createElement("button");
-    //         editBtn.textContent = " Edit ";
-    //         editBtn.classList = "btn btn-outline-warning mx-2";
-    //         li.appendChild(dltBtn);
-    //         li.appendChild(editBtn);
-    //         ul.appendChild(li);
-    //         dltBtn.onclick = () => {
-    //             li.remove();
-    //             localStorage.removeItem(key);
-    //         }
-    //         editBtn.onclick = () => {
-    //             let arr = JSON.parse(localStorage.getItem(key));
-    //             amount.value = arr[0];
-    //             desc.value = arr[1];
-    //             category.value = arr[2];
-    //             li.remove();
-    //             localStorage.removeItem(key);
-    //         }
-    //     });
+
+    window.onload = () => {
+      axios.get('/expense-data')
+      .then(result => {
+        console.log(result.data);
+        addToTable(result.data);
+      })
+      .catch(err => {
+        console.log("Some error: ",err);
+      })
+    }
+
+    function addToTable(datas){
+      console.log(datas.length);
+      for(let data of datas){
+        let row = table.insertRow(); 
+        let cell1 = row.insertCell(0);
+        let cell2 = row.insertCell(1);
+        let cell3 = row.insertCell(2);
+        cell1.innerHTML = data.amount;
+        cell2.innerHTML = data.description;
+        cell3.innerHTML = data.category;
+      }
+    }
     form.addEventListener("submit", addExpense);
   </script>
 </body>

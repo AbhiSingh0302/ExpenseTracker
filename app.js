@@ -45,16 +45,29 @@ app.use(bodyParser.json());
 
 app.post('/expense',(req,res,next)=>{
     let userData = req.body;
-    console.log(userData);
-    user.create({
+    console.log("userData: ",userData);
+   const response =  user.create({
         amount: userData.amount,
         description: userData.desciption,
         category: userData.category
     })
     .then(result => {
-        console.log("created: ",result);
+        console.log("success post: ",result);
+        res.status(200).json({
+            message: "Successfully Posted",
+            data: result
+        })
     })
     .catch(err => console.log("There is error: ",err));
+});
+
+app.get('/expense-data',(req,res,next)=>{
+    user.findAll()
+    .then(results=>{
+        console.log("Success");
+        res.json(results);
+    })
+    .catch(err=>console.log("There is error: ",err));
 })
 
 app.get('/',(req,res,next)=>{
