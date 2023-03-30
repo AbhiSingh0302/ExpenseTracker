@@ -106,7 +106,10 @@
         })
         cell5.innerHTML = '<button type="button" class="btn btn-outline-primary">Edit</button>';
         cell5.addEventListener('click',(e)=>{
-          editExpense(e.target.parentElement.parentElement);
+          amount.value = data.amount;
+          desc.value = data.description;
+          category.value = data.category;
+          deleteExpense(e.target.parentElement.parentElement);
         })
       }
     }
